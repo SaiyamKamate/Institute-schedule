@@ -1,15 +1,20 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
   const [role, setRole] = useState("admin");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const navigate = useNavigate();
+
   function handleSubmit(e) {
     e.preventDefault();
-    // temporary behaviour for MVP:
-    alert(`Login attempt — role: ${role}\nemail: ${email}`);
-    // TODO: replace with real auth / routing later
+    if (role === "admin") {
+      navigate("/admin");
+    } else {
+      alert("✅ Logged in as Teacher");  
+    }
   }
 
   return (
