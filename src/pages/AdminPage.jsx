@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Sidebar from "../components/Sidebar";
 
 export default function AdminPage() {
   const [formData, setFormData] = useState({
@@ -20,37 +21,13 @@ export default function AdminPage() {
   function handleSubmit(e) {
     e.preventDefault();
     console.log("Admin Parameters:", formData);
-    alert("✅ Parameters saved! (Check console for details)");
+    alert("✅ Parameters saved!");
   }
 
   return (
-    <div className="flex min-h-screen bg-blue-50">
-      {/* Sidebar */}
-      <aside className="w-64 bg-blue-900 text-white flex flex-col">
-        {/* Admin Info */}
-        <div className="flex flex-col items-center py-6 border-b border-blue-700">
-          <img
-            src="https://i.pravatar.cc/100"
-            alt="Admin"
-            className="w-16 h-16 rounded-full border-2 border-white shadow-md"
-          />
-          <h2 className="mt-3 font-semibold">Admin Name</h2>
-          <p className="text-sm text-blue-200">admin@gmail.com</p>
-        </div>
+    <div className="flex min-h-screen">
+      <Sidebar />
 
-        {/* Sidebar menu */}
-        <nav className="flex-1 mt-6">
-          <ul className="space-y-2 px-4">
-            <li>
-              <button className="w-full text-left px-3 py-2 rounded-lg bg-blue-700 hover:bg-blue-600 transition">
-                Institution Details
-              </button>
-            </li>
-          </ul>
-        </nav>
-      </aside>
-
-      {/* Main Content */}
       <main className="flex-1 p-10">
         <h1 className="text-3xl font-bold text-blue-900 mb-8 flex items-center gap-2">
           🏫 Institution Details
@@ -58,7 +35,6 @@ export default function AdminPage() {
 
         <div className="bg-white shadow-md rounded-xl p-8">
           <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
-            {/* Row 1 */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Number of classrooms
@@ -85,7 +61,6 @@ export default function AdminPage() {
               />
             </div>
 
-            {/* Row 2 */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Number of subjects
@@ -112,7 +87,6 @@ export default function AdminPage() {
               />
             </div>
 
-            {/* Row 3 */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Max classes per day
@@ -139,7 +113,6 @@ export default function AdminPage() {
               />
             </div>
 
-            {/* Row 4 */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Faculties available
@@ -155,7 +128,7 @@ export default function AdminPage() {
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Avg leaves per faculty (month)
+                Avg leaves per faculty
               </label>
               <input
                 name="avgLeaves"
@@ -166,7 +139,6 @@ export default function AdminPage() {
               />
             </div>
 
-            {/* Row 5 */}
             <div className="col-span-2">
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 Special classes (fixed slots)
@@ -180,7 +152,6 @@ export default function AdminPage() {
               />
             </div>
 
-            {/* Submit button */}
             <div className="col-span-2">
               <button
                 type="submit"
