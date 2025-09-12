@@ -1,79 +1,70 @@
-import { useState } from "react";
+// src/pages/Login.jsx
+import React, { useEffect, useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const [role, setRole] = useState("admin");
+  const { currentUser, login } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (currentUser) {
+      if (currentUser.role === "admin") navigate("/admin");
+      else navigate("/teacher");
+    }
+  }, [currentUser, navigate]);
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const navigate = useNavigate();
-
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
-    if (role === "admin") {
-      navigate("/admin");
-    } else {
-      alert("✅ Logged in as Teacher");  
+    try {
+      const user = await login(email.trim(), password);
+      if (user.role === "admin") navigate("/admin");
+      else navigate("/teacher");
+    } catch (err) {
+      alert(err.message);
     }
   }
 
   return (
-    <div className="flex h-screen items-center justify-center bg-blue-200">
-      <div className="bg-white shadow-lg rounded-2xl p-8 w-96">
-        <h1 className="text-2xl font-bold text-blue-600 mb-6 text-center">
-          Institute Scheduler
-        </h1>
-
-        <div className="flex justify-center mb-6 space-x-4">
-          <button
-            type="button"
-            onClick={() => setRole("admin")}
-            className={`px-4 py-2 rounded-lg font-medium ${
-              role === "admin"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 text-gray-600"
-            }`}
-          >
-            Admin
-          </button>
-          <button
-            type="button"
-            onClick={() => setRole("teacher")}
-            className={`px-4 py-2 rounded-lg font-medium ${
-              role === "teacher"
-                ? "bg-blue-600 text-white"
-                : "bg-gray-100 text-gray-600"
-            }`}
-          >
-            Teacher
-          </button>
-        </div>
-
+    <div className="min-h-screen flex items-center justify-center bg-blue-400">
+      <div className="bg-white shadow-lg rounded-xl p-8 w-full max-w-sm">
+        <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
         <form onSubmit={handleSubmit} className="space-y-4">
           <input
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
             type="email"
             placeholder="Email"
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
             required
+            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
           />
           <input
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
             type="password"
             placeholder="Password"
-            className="w-full border border-gray-300 rounded-lg px-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
+            className="w-full p-2 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none"
           />
-
           <button
             type="submit"
             className="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition"
           >
-            Login as {role === "admin" ? "Admin" : "Teacher"}
+            Login
           </button>
         </form>
+
+        <div className="mt-6 text-sm text-gray-600">
+          <strong>Test Accounts:</strong>
+          <ul className="mt-2 space-y-1">
+            <li>Admin → <code>admin@gmail.com</code> / <code>admin123</code></li>
+            <li>Teacher 1 → <code>teacher1@gmail.com</code> / <code>teacher123</code></li>
+            <li>Teacher 2 → <code>teacher2@gmail.com</code> / <code>teacher123</code></li>
+          </ul>
+        </div>
       </div>
     </div>
   );

@@ -1,27 +1,58 @@
 import { useState } from "react";
 import Sidebar from "../components/Sidebar";
+import { useFaculty } from "../context/FacultyContext";
+import Timetables from "./Timetables";
 
 export default function AdminPage() {
-  const [formData, setFormData] = useState({
-    classrooms: "",
-    batches: "",
-    subjectsCount: "",
-    subjects: "",
-    maxClassesPerDay: "",
-    subjectFrequency: "",
-    faculties: "",
-    avgLeaves: "",
-    specialClasses: "",
-  });
+  const { setInstitutionSubjects } = useFaculty();
 
-  function handleChange(e) {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
+  const [classrooms, setClassrooms] = useState(0);
+  const [capacity, setCapacity] = useState(60);
+  const [batches, setBatches] = useState(0);
+  const [maxClassesPerDay, setMaxClassesPerDay] = useState(7);
+  const [classesPerWeek, setClassesPerWeek] = useState(4);
+
+  const [subjects, setSubjects] = useState([]);
+  const [newSubject, setNewSubject] = useState("");
+  const [newBatch, setNewBatch] = useState("");
+
+  const [specialClasses, setSpecialClasses] = useState([]);
+  const [newSpecialClass, setNewSpecialClass] = useState("");
+
+  function addSubject() {
+    if (!newSubject || !newBatch) return;
+    setSubjects([...subjects, { subject: newSubject, batch: newBatch }]);
+    setNewSubject("");
+    setNewBatch("");
   }
 
-  function handleSubmit(e) {
-    e.preventDefault();
-    console.log("Admin Parameters:", formData);
-    alert("✅ Parameters saved!");
+  function removeSubject(index) {
+    setSubjects(subjects.filter((_, i) => i !== index));
+  }
+
+  function addSpecialClass() {
+    if (!newSpecialClass) return;
+    setSpecialClasses([...specialClasses, newSpecialClass]);
+    setNewSpecialClass("");
+  }
+
+  function removeSpecialClass(index) {
+    setSpecialClasses(specialClasses.filter((_, i) => i !== index));
+  }
+
+  function handleSave() {
+    const data = {
+      classrooms,
+      capacity,
+      batches,
+      maxClassesPerDay,
+      classesPerWeek,
+      subjects,
+      specialClasses,
+    };
+    console.log("Institution details:", data);
+    setInstitutionSubjects(subjects); // ✅ update FacultyContext
+    alert("✅ Institution details saved!");
   }
 
   return (
@@ -29,139 +60,115 @@ export default function AdminPage() {
       <Sidebar />
 
       <main className="flex-1 p-10">
-        <h1 className="text-3xl font-bold text-blue-900 mb-8 flex items-center gap-2">
-          🏫 Institution Details
-        </h1>
+        <h1 className="text-3xl font-bold text-blue-900 mb-8">🏫 Institution Details</h1>
 
-        <div className="bg-white shadow-md rounded-xl p-8">
-          <form onSubmit={handleSubmit} className="grid grid-cols-2 gap-6">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Number of classrooms
-              </label>
+        <div className="bg-white shadow-md rounded-xl p-8 space-y-6">
+
+          <div>
+            <label className="block text-sm font-medium">Number of Classrooms</label>
+            <input
+              type="number"
+              value={classrooms}
+              onChange={(e) => setClassrooms(e.target.value)}
+              className="w-full border rounded-lg px-4 py-2"
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium">Classes per Subject (per week)</label>
+            <input
+              type="number"
+              value={classesPerWeek}
+              onChange={(e) => setClassesPerWeek(e.target.value)}
+              className="w-full border rounded-lg px-4 py-2"
+            />
+          </div>
+
+          {/* Subjects */}
+          <div>
+            <label className="block text-sm font-medium">Subjects</label>
+            <div className="flex gap-2 mb-3">
               <input
-                name="classrooms"
-                value={formData.classrooms}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                placeholder="e.g. 10"
+                type="text"
+                placeholder="Subject name"
+                value={newSubject}
+                onChange={(e) => setNewSubject(e.target.value)}
+                className="flex-1 border rounded-lg px-4 py-2"
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Number of batches
-              </label>
               <input
-                name="batches"
-                value={formData.batches}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                placeholder="e.g. 5"
+                type="text"
+                placeholder="Batch (e.g. CSE 1st Year)"
+                value={newBatch}
+                onChange={(e) => setNewBatch(e.target.value)}
+                className="flex-1 border rounded-lg px-4 py-2"
               />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Number of subjects
-              </label>
-              <input
-                name="subjectsCount"
-                value={formData.subjectsCount}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                placeholder="e.g. 6"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Subject names
-              </label>
-              <textarea
-                name="subjects"
-                value={formData.subjects}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                placeholder="e.g. Math, Physics, Chemistry"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Max classes per day
-              </label>
-              <input
-                name="maxClassesPerDay"
-                value={formData.maxClassesPerDay}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                placeholder="e.g. 6"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Classes per subject (week/day)
-              </label>
-              <input
-                name="subjectFrequency"
-                value={formData.subjectFrequency}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                placeholder="e.g. 4 per week"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Faculties available
-              </label>
-              <input
-                name="faculties"
-                value={formData.faculties}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                placeholder="e.g. 12"
-              />
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Avg leaves per faculty
-              </label>
-              <input
-                name="avgLeaves"
-                value={formData.avgLeaves}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                placeholder="e.g. 2"
-              />
-            </div>
-
-            <div className="col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Special classes (fixed slots)
-              </label>
-              <textarea
-                name="specialClasses"
-                value={formData.specialClasses}
-                onChange={handleChange}
-                className="w-full border rounded-lg px-4 py-2 focus:ring-2 focus:ring-blue-400 focus:outline-none"
-                placeholder="e.g. Lab every Wednesday 2-4 PM"
-              />
-            </div>
-
-            <div className="col-span-2">
               <button
-                type="submit"
-                className="w-full bg-blue-700 text-white py-3 rounded-lg hover:bg-blue-800 shadow-md transition"
+                type="button"
+                onClick={addSubject}
+                className="bg-blue-600 text-white px-4 rounded-lg"
               >
-                Save Parameters
+                Add
               </button>
             </div>
-          </form>
+
+            <ul className="space-y-2">
+              {subjects.map((s, i) => (
+                <li key={i} className="flex justify-between items-center border p-2 rounded-lg">
+                  <span>{s.subject} → {s.batch}</span>
+                  <button
+                    onClick={() => removeSubject(i)}
+                    className="text-red-600 hover:underline"
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          {/* Special Classes */}
+          <div>
+            <label className="block text-sm font-medium">Special Classes (fixed slots)</label>
+            <div className="flex gap-2 mb-3">
+              <input
+                type="text"
+                placeholder="e.g. Lab every Wed 2-4 PM"
+                value={newSpecialClass}
+                onChange={(e) => setNewSpecialClass(e.target.value)}
+                className="flex-1 border rounded-lg px-4 py-2"
+              />
+              <button
+                type="button"
+                onClick={addSpecialClass}
+                className="bg-blue-600 text-white px-4 rounded-lg"
+              >
+                Add
+              </button>
+            </div>
+
+            <ul className="space-y-2">
+              {specialClasses.map((sc, i) => (
+                <li key={i} className="flex justify-between items-center border p-2 rounded-lg">
+                  <span>{sc}</span>
+                  <button
+                    onClick={() => removeSpecialClass(i)}
+                    className="text-red-600 hover:underline"
+                  >
+                    Remove
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <button
+            onClick={handleSave}
+            className="w-full bg-blue-700 text-white py-3 rounded-lg hover:bg-blue-800"
+          >
+            Save Institution Details
+          </button>
         </div>
+        {/* Timetables section removed as requested */}
       </main>
     </div>
   );

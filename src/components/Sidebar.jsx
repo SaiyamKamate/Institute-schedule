@@ -1,11 +1,14 @@
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Sidebar() {
   const navigate = useNavigate();
+  const { logout } = useAuth();
 
   function handleLogout() {
+    logout();
     alert("✅ Logged out!");
-    navigate("/");
+    navigate("/login");
   }
 
   return (
