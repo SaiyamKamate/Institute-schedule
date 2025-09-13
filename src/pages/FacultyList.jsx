@@ -1,8 +1,11 @@
 import Sidebar from "../components/Sidebar";
 import { useFaculty } from "../context/FacultyContext";
 
+import { useState } from "react";
+
 export default function FacultyList() {
   const { faculty, assignSubject, subjects } = useFaculty();
+  const [selectedSubjects, setSelectedSubjects] = useState({}); // { [teacherId]: subjectName }
 
   return (
     <div className="flex min-h-screen">
@@ -26,23 +29,36 @@ export default function FacultyList() {
                   <td className="p-3">{f.name}</td>
                   <td className="p-3">{f.email}</td>
                   <td className="p-3">
-                    {f.subjects.length > 0 ? f.subjects.join(", ") : <span className="text-gray-400">None</span>}
+                    {f.subjects && f.subjects.length > 0 ? f.subjects.join(", ") : <span className="text-gray-400">None</span>}
                   </td>
-                  <td className="p-3">
+                  <td className="p-3 flex items-center gap-2">
                     <select
-                      onChange={(e) => assignSubject(f.id, e.target.value)}
+                      value={selectedSubjects[f.id] || ""}
+                      onChange={(e) => {
+                        setSelectedSubjects((prev) => ({ ...prev, [f.id]: e.target.value }));
+                      }}
                       className="border rounded-lg px-3 py-1"
-                      defaultValue=""
                     >
-                      <option value="" disabled>
+                      <option value="">
                         Select Subject
                       </option>
-                      {subjects.map((s, i) => (
-                        <option key={i} value={`${s.subject}|${s.batch}`}>
-                          {s.subject} ({s.batch})
+                      {subjects.map((name, i) => (
+                        <option key={i} value={name}>
+                          {name}
                         </option>
                       ))}
                     </select>
+                    {selectedSubjects[f.id] && (
+                      <button
+                        className="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded-lg transition"
+                        onClick={() => {
+                          assignSubject(f.id, selectedSubjects[f.id]);
+                          setSelectedSubjects((prev) => ({ ...prev, [f.id]: "" }));
+                        }}
+                      >
+                        Confirm
+                      </button>
+                    )}
                   </td>
                 </tr>
               ))}
