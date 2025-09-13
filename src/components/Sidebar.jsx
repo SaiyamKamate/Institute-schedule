@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
+
 export default function Sidebar() {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, currentUser } = useAuth();
 
   function handleLogout() {
     logout();
@@ -24,10 +25,8 @@ export default function Sidebar() {
               className="w-16 h-16 rounded-full border-2 border-white shadow-md"
             />
           ) : null}
-          {/* Placeholder for future profile picture upload */}
-          {/* <button className="mt-2 text-xs text-blue-200 underline">Set Profile Picture</button> */}
-          <h2 className="mt-3 font-semibold">Admin Name</h2>
-          <p className="text-sm text-blue-200">admin@gmail.com</p>
+          <h2 className="mt-3 font-semibold">{currentUser?.name || "Admin Name"}</h2>
+          <p className="text-sm text-blue-200">{currentUser?.email || "admin@gmail.com"}</p>
         </div>
 
         {/* Sidebar menu */}
