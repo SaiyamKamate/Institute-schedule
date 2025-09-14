@@ -37,3 +37,4 @@ def login(data: LoginRequest):
         "user": user_dict,
         "session": response.session
     }
+

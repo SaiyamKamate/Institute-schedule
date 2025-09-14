@@ -21,7 +21,9 @@ class AssignSubjectRequest(BaseModel):
 
 @router.post("/assign_subject")
 def assign_subject(data: AssignSubjectRequest):
-    # Insert a new assignment row
+    # Remove any existing assignment for this teacher
+    service_supabase.table("teacher_subject_assignment").delete().eq("teacher_id", data.teacher_id).execute()
+    # Insert the new assignment
     result = service_supabase.table("teacher_subject_assignment").insert({
         "teacher_id": data.teacher_id,
         "subject_id": data.subject_id
@@ -56,6 +58,20 @@ def get_subject_names():
     # Return as a flat list
     names = [row["name"] for row in result.data]
     return {"subjects": names}
+
+@router.get("/subjects")
+def get_all_subjects():
+    result = service_supabase.table("subjects").select("*").execute()
+    if not result.data:
+        raise HTTPException(status_code=404, detail="No subjects found")
+    return {"subjects": result.data}
+
+@router.get("/faculty_with_subjects")
+def faculty_with_subjects():
+    result = service_supabase.rpc("faculty_with_subjects").execute()
+    if not result.data:
+        return []
+    return result.data
 
 @router.put("/update_user")
 def update_user(data: UpdateUserRequest):
