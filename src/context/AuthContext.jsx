@@ -37,7 +37,9 @@ export function AuthProvider({ children }) {
       const user = {
         email: data.user?.email || email,
         role: data.user?.role || "teacher", // Adjust if your backend returns role
-        name: data.user?.user_metadata?.name || email.split("@")[0],
+        name: data.user?.name,
+        department: data.user?.department,
+        subjects: data.user?.subjects,
         token: data.session?.access_token,
       };
       setCurrentUser(user);

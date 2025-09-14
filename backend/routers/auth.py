@@ -23,18 +23,25 @@ def login(data: LoginRequest):
     })
     if response is None or response.user is None or response.session is None:
         raise HTTPException(status_code=401, detail="Invalid credentials")
-    # Fetch role from users table using service key
     user_id = response.user.id
-    role_result = service_supabase.table("users").select("role").eq("id", user_id).execute()
-    role = None
-    if role_result.data and len(role_result.data) > 0:
-        role = role_result.data[0].get("role")
-    # Add role to user dict if found
-    user_dict = dict(response.user)
-    if role:
-        user_dict["role"] = role
+
+    # Fetch all relevant fields from users table
+    user_row_result = service_supabase.table("users").select("id, email, role, name, department").eq("id", user_id).execute()
+    if not user_row_result.data or len(user_row_result.data) == 0:
+        raise HTTPException(status_code=404, detail="User not found in users table")
+    user_row = user_row_result.data[0]
+
+    # Build a clean user dict for the frontend
+    user_dict = {
+        "id": user_row.get("id"),
+        "email": user_row.get("email"),
+        "role": user_row.get("role"),
+        "name": user_row.get("name"),
+        "department": user_row.get("department"),
+    }
+
     return {
         "user": user_dict,
-        "session": response.session
+        "access_token": response.session.access_token
     }
 

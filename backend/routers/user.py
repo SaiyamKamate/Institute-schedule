@@ -43,6 +43,7 @@ def get_teacher_subjects(teacher_id: str):
     if not result.data:
         return {"subjects": []}
     return {"subjects": result.data}
+
 @router.get("/faculty_list")
 def get_faculty_list():
     result = service_supabase.table("users").select("id, name, email").execute()
