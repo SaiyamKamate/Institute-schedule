@@ -20,17 +20,33 @@ export function AuthProvider({ children }) {
   }, [currentUser]);
 
   async function login(email, password) {
-    // Relaxed logic: accept any email/password
-    let role = "teacher";
-    if (email === "admin@gmail.com") role = "admin";
-    const user = {
-      email,
-      password,
-      role,
-      name: email.split("@")[0],
-    };
-    setCurrentUser(user);
-    return user;
+    try {
+      const response = await fetch("http://localhost:8000/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.detail || "Login failed");
+      }
+      const data = await response.json();
+      // You may want to adjust this depending on your backend's response structure
+      const user = {
+        email: data.user?.email || email,
+        role: data.user?.role || "teacher", // Adjust if your backend returns role
+        name: data.user?.name,
+        department: data.user?.department,
+        subjects: data.user?.subjects,
+        token: data.session?.access_token,
+      };
+      setCurrentUser(user);
+      return user;
+    } catch (err) {
+      throw err;
+    }
   }
 
   function logout() {

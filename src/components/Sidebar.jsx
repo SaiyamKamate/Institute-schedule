@@ -1,9 +1,10 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
+
 export default function Sidebar() {
   const navigate = useNavigate();
-  const { logout } = useAuth();
+  const { logout, currentUser } = useAuth();
 
   function handleLogout() {
     logout();
@@ -16,13 +17,16 @@ export default function Sidebar() {
       <div>
         {/* Admin Info */}
         <div className="flex flex-col items-center py-6 border-b border-blue-700">
-          <img
-            src="https://i.pravatar.cc/100"
-            alt="Admin"
-            className="w-16 h-16 rounded-full border-2 border-white shadow-md"
-          />
-          <h2 className="mt-3 font-semibold">Admin Name</h2>
-          <p className="text-sm text-blue-200">admin@gmail.com</p>
+          {/* Profile Picture: show only if set in currentUser (admin) */}
+          {currentUser?.profile_picture ? (
+            <img
+              src={currentUser.profile_picture}
+              alt="Admin"
+              className="w-16 h-16 rounded-full border-2 border-white shadow-md"
+            />
+          ) : null}
+          <h2 className="mt-3 font-semibold">{currentUser?.name || "Admin Name"}</h2>
+          <p className="text-sm text-blue-200">{currentUser?.email || "admin@gmail.com"}</p>
         </div>
 
         {/* Sidebar menu */}

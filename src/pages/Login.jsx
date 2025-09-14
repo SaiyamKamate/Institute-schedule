@@ -10,7 +10,7 @@ export default function Login() {
   useEffect(() => {
     if (currentUser) {
       if (currentUser.role === "admin") navigate("/admin");
-      else navigate("/teacher");
+      else navigate("/teacher/info");
     }
   }, [currentUser, navigate]);
 
@@ -22,7 +22,7 @@ export default function Login() {
     try {
       const user = await login(email.trim(), password);
       if (user.role === "admin") navigate("/admin");
-      else navigate("/teacher");
+      else navigate("/teacher/info");
     } catch (err) {
       alert(err.message);
     }
@@ -60,9 +60,8 @@ export default function Login() {
         <div className="mt-6 text-sm text-gray-600">
           <strong>Test Accounts:</strong>
           <ul className="mt-2 space-y-1">
-            <li>Admin → <code>admin@gmail.com</code> / <code>admin123</code></li>
-            <li>Teacher 1 → <code>teacher1@gmail.com</code> / <code>teacher123</code></li>
-            <li>Teacher 2 → <code>teacher2@gmail.com</code> / <code>teacher123</code></li>
+            <li>Admin → <code>taneevborah@gmail.com</code> / <code>taneev123</code></li>
+            <li>Teacher 1 → <code>shashank.me.vadati@gmail.com</code> / <code>wherebackend</code></li>
           </ul>
         </div>
       </div>

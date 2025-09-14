@@ -19,11 +19,16 @@ export default function TeacherLayout() {
         <div>
           {/* Teacher Info */}
           <div className="flex flex-col items-center py-6 border-b border-blue-700">
-            <img
-              src="https://i.pravatar.cc/100?img=12"
-              alt="Teacher"
-              className="w-16 h-16 rounded-full border-2 border-white shadow-md"
-            />
+            {/* Profile Picture: show only if set in currentUser */}
+            {currentUser?.profile_picture ? (
+              <img
+                src={currentUser.profile_picture}
+                alt="Teacher"
+                className="w-16 h-16 rounded-full border-2 border-white shadow-md"
+              />
+            ) : null}
+            {/* Placeholder for future profile picture upload */}
+            {/* <button className="mt-2 text-xs text-blue-200 underline">Set Profile Picture</button> */}
             <h2 className="mt-3 font-semibold">
               {currentUser?.name || "Teacher"}
             </h2>
