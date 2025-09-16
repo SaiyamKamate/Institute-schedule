@@ -1,8 +1,10 @@
-import { Link, useNavigate } from "react-router-dom";
+
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 
 export default function Sidebar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { logout } = useAuth();
 
   function handleLogout() {
@@ -14,14 +16,14 @@ export default function Sidebar() {
   return (
     <aside className="w-64 bg-blue-900 text-white flex flex-col justify-between">
       <div>
-        {/* Admin Info */}
+        {/* Profile Info */}
         <div className="flex flex-col items-center py-6 border-b border-blue-700">
           <img
-            src="https://i.pravatar.cc/100"
-            alt="Admin"
+            src="https://i.pravatar.cc/100?img=12"
+            alt="Dr. Sharma"
             className="w-16 h-16 rounded-full border-2 border-white shadow-md"
           />
-          <h2 className="mt-3 font-semibold">Admin Name</h2>
+          <h2 className="mt-3 font-semibold">Admin</h2>
           <p className="text-sm text-blue-200">admin@gmail.com</p>
         </div>
 
@@ -31,7 +33,7 @@ export default function Sidebar() {
             <li>
               <Link
                 to="/admin"
-                className="block px-3 py-2 rounded-lg bg-blue-700 hover:bg-blue-600 transition"
+                className={`block px-3 py-2 rounded-lg transition ${location.pathname === "/admin" ? "bg-blue-700" : "hover:bg-blue-700"}`}
               >
                 🏫 Institution Details
               </Link>

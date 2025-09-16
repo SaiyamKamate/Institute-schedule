@@ -22,12 +22,19 @@ export function AuthProvider({ children }) {
   async function login(email, password) {
     // Relaxed logic: accept any email/password
     let role = "teacher";
+    let name = email.split("@")[0];
+    // Use demo user name if available
+    const demo = users.find(u => u.email === email);
+    if (demo) {
+      role = demo.role;
+      name = demo.name;
+    }
     if (email === "admin@gmail.com") role = "admin";
     const user = {
       email,
       password,
       role,
-      name: email.split("@")[0],
+      name,
     };
     setCurrentUser(user);
     return user;
